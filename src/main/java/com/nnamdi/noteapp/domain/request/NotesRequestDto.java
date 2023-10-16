@@ -1,5 +1,6 @@
 package com.nnamdi.noteapp.domain.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,5 +21,6 @@ public class NotesRequestDto implements Serializable {
     private String content;
 
     @NotBlank(message = "author of the note must be provided")
-    private String author;
+    @JsonProperty("author")
+    private String createdBy;
 }
