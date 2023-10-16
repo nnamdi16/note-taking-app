@@ -1,5 +1,6 @@
 package com.nnamdi.noteapp.services;
 
+import com.nnamdi.noteapp.domain.request.NoteUpdateRequestDto;
 import com.nnamdi.noteapp.domain.request.NotesRequestDto;
 import com.nnamdi.noteapp.exceptions.ModelAlreadyExistException;
 import com.nnamdi.noteapp.exceptions.ModelNotFoundException;
@@ -89,6 +90,19 @@ class NoteServiceTest {
         assertThatThrownBy(() -> notesService.getNote(anyString())).hasMessage("Note not found").isInstanceOf(ModelNotFoundException.class);
     }
 
+    @Test
+    void testToUpdateNote() {
+        Notes note = buildNote();
+        when(repository.findById(updatedNote().getId())).thenReturn(Optional.of(note));
+        when(notesService.findNoteById(updatedNote().getId())).thenReturn(note);
+        when(notesUtil.updateNoteEntity(note, updateRequestDto())).thenReturn(updatedNote());
+        when(repository.save(any(Notes.class))).thenReturn(updatedNote());
+        final  var response = notesService.updateNote(updatedNote().getId(), updateRequestDto());
+        assertThat(response).isNotNull();
+        assertThat(response.getTitle()).isNotBlank();
+        assertThat(response.getId()).isNotBlank();
+    }
+
 
     NotesRequestDto buildNoteRequestDto() {
         return  NotesRequestDto.builder()
@@ -96,6 +110,21 @@ class NoteServiceTest {
                 .content("Health is wealth in all generation")
                 .createdBy("John Doe")
                 .build();
+    }
+
+    NoteUpdateRequestDto updateRequestDto() {
+        return NoteUpdateRequestDto.builder()
+                .lastModifiedBy("John Doe")
+                .content("Current health situations are improving")
+                .build();
+    }
+
+    Notes updatedNote() {
+        Notes note = buildNote();
+        note.setContent(updateRequestDto().getContent());
+        note.setLastModifiedBy(updateRequestDto().getLastModifiedBy());
+        note.setLastModifiedDate(ZonedDateTime.now());
+        return  note;
     }
 
     Notes buildNote() {
