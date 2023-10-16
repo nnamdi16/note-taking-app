@@ -4,6 +4,7 @@ import com.nnamdi.noteapp.domain.dto.NoteUpdateRequestDto;
 import com.nnamdi.noteapp.domain.dto.NotesDto;
 import com.nnamdi.noteapp.domain.request.NotesRequestDto;
 import com.nnamdi.noteapp.exceptions.ModelAlreadyExistException;
+import com.nnamdi.noteapp.exceptions.ModelNotFoundException;
 import com.nnamdi.noteapp.model.Notes;
 import com.nnamdi.noteapp.repositories.NotesRepository;
 import com.nnamdi.noteapp.services.NotesService;
@@ -45,7 +46,10 @@ public class NotesServiceImpl implements NotesService {
 
     @Override
     public NotesDto getNote(String noteId) {
-        return null;
+        log.info("about to find notes by id {}", noteId);
+        Notes  note =  repository.findById(noteId).orElseThrow(() -> new ModelNotFoundException("Note not found"));
+        return  modelMapper.map(note, NotesDto.class);
+
     }
 
     @Override
