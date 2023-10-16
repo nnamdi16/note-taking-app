@@ -1,6 +1,7 @@
 package com.nnamdi.noteapp.model;
 
 
+import com.nnamdi.noteapp.utils.AppUtil;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -42,6 +43,9 @@ public class AbstractBaseEntity implements Serializable {
         log.debug("about to run abstractPrePersist method");
         createdDate = ZonedDateTime.now();
         lastModifiedDate = ZonedDateTime.now();
+        if (AppUtil.stringIsNullOrEmpty(id)) {
+            id = AppUtil.generateUUIDString();
+        }
         log.debug("finished running abstractPrePersist method ");
     }
 
