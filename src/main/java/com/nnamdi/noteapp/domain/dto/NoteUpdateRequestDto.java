@@ -1,5 +1,6 @@
 package com.nnamdi.noteapp.domain.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -17,7 +18,8 @@ public class NoteUpdateRequestDto {
     private String content;
 
     @NotBlank(message = " author of the update must be provided")
-    private String author;
+    @JsonProperty("author")
+    private String lastModifiedBy;
 
 
 }
