@@ -2,6 +2,7 @@ package com.nnamdi.noteapp.services;
 
 import com.nnamdi.noteapp.domain.request.NotesRequestDto;
 import com.nnamdi.noteapp.exceptions.ModelAlreadyExistException;
+import com.nnamdi.noteapp.exceptions.ModelNotFoundException;
 import com.nnamdi.noteapp.model.Notes;
 import com.nnamdi.noteapp.repositories.NotesRepository;
 import com.nnamdi.noteapp.services.impl.NotesServiceImpl;
@@ -72,6 +73,21 @@ class NoteServiceTest {
         assertThatThrownBy(() -> notesService.createNote(requestDto)).hasMessage("Note already exist").isInstanceOf(ModelAlreadyExistException.class);
     }
 
+    @Test
+    void testToGetNote() {
+        Notes note = buildNote();
+        when(repository.findById(anyString())).thenReturn(Optional.ofNullable(note));
+        final  var response = notesService.getNote(anyString());
+        assertThat(response).isNotNull();
+        assertThat(response.getTitle()).isNotBlank();
+        assertThat(response.getId()).isNotBlank();
+    }
+
+    @Test
+    void testGetNoteThrowsException() {
+        when(repository.findById(anyString())).thenReturn(Optional.empty());
+        assertThatThrownBy(() -> notesService.getNote(anyString())).hasMessage("Note not found").isInstanceOf(ModelNotFoundException.class);
+    }
 
 
     NotesRequestDto buildNoteRequestDto() {
