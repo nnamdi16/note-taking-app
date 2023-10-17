@@ -1,5 +1,6 @@
 package com.nnamdi.noteapp.domain.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,9 +16,8 @@ public class NotesDto implements Serializable {
     private String id;
     private String title;
     private String content;
-    private String createdDate;
-    private String lastModifiedDate;
+    @JsonProperty("author")
     private String createdBy;
-    private String lastModifiedBy;
+
 
 }

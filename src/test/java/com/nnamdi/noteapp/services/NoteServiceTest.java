@@ -1,5 +1,6 @@
 package com.nnamdi.noteapp.services;
 
+import com.nnamdi.noteapp.domain.request.NoteUpdateRequestDto;
 import com.nnamdi.noteapp.domain.request.NotesRequestDto;
 import com.nnamdi.noteapp.exceptions.ModelAlreadyExistException;
 import com.nnamdi.noteapp.exceptions.ModelNotFoundException;
@@ -11,10 +12,8 @@ import com.nnamdi.noteapp.utils.NotesUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -28,7 +27,6 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @Slf4j
-@RunWith(MockitoJUnitRunner.class)
 @SpringBootTest
 class NoteServiceTest {
     @Mock
@@ -89,6 +87,27 @@ class NoteServiceTest {
         assertThatThrownBy(() -> notesService.getNote(anyString())).hasMessage("Note not found").isInstanceOf(ModelNotFoundException.class);
     }
 
+    @Test
+    void testToUpdateNote() {
+        Notes note = buildNote();
+        when(repository.findById(anyString())).thenReturn(Optional.of(note));
+        when(notesUtil.updateNoteEntity(note, updateRequestDto())).thenReturn(updatedNote());
+        when(repository.save(any(Notes.class))).thenReturn(updatedNote());
+        final  var response = notesService.updateNote(updatedNote().getId(), updateRequestDto());
+        assertThat(response).isNotNull();
+        assertThat(response.getTitle()).isNotBlank();
+        assertThat(response.getId()).isNotBlank();
+    }
+
+    @Test
+    void testToDeleteNote() {
+
+        when(repository.findById(anyString())).thenReturn(Optional.ofNullable(buildNote()));
+         final var response = notesService.deleteNote(buildNote().getId());
+         assertThat(response).isNotNull();
+
+    }
+
 
     NotesRequestDto buildNoteRequestDto() {
         return  NotesRequestDto.builder()
@@ -96,6 +115,21 @@ class NoteServiceTest {
                 .content("Health is wealth in all generation")
                 .createdBy("John Doe")
                 .build();
+    }
+
+    NoteUpdateRequestDto updateRequestDto() {
+        return NoteUpdateRequestDto.builder()
+                .lastModifiedBy("John Doe")
+                .content("Current health situations are improving")
+                .build();
+    }
+
+    Notes updatedNote() {
+        Notes note = buildNote();
+        note.setContent(updateRequestDto().getContent());
+        note.setLastModifiedBy(updateRequestDto().getLastModifiedBy());
+        note.setLastModifiedDate(ZonedDateTime.now());
+        return  note;
     }
 
     Notes buildNote() {
