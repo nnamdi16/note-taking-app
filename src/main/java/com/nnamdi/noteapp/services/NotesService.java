@@ -1,9 +1,11 @@
 package com.nnamdi.noteapp.services;
 
-import com.nnamdi.noteapp.domain.dto.NoteUpdateRequestDto;
+import com.nnamdi.noteapp.domain.request.NoteUpdateRequestDto;
 import com.nnamdi.noteapp.domain.dto.NotesDto;
 import com.nnamdi.noteapp.domain.request.NotesRequestDto;
+import com.nnamdi.noteapp.model.Notes;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 public interface NotesService {
     NotesDto createNote(NotesRequestDto requestDto);
@@ -11,11 +13,13 @@ public interface NotesService {
 
     NotesDto getNote(String noteId);
 
-    Page<NotesDto> getNotes(int page, int limit);
+    Notes findNoteById(String noteId);
 
-    NotesDto deleteNote(String noteId);
+    Page<NotesDto> getNotes(int page, int limit, String searchValue);
 
-    Page<NotesDto> getNotesByAuthor(String author, int page, int limit);
+    Notes deleteNote(String noteId);
+
+    Page<NotesDto> getNotesByAuthor(String author, Pageable pageable);
 
 
 }
