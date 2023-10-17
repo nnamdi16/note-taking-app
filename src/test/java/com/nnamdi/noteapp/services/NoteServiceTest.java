@@ -12,10 +12,8 @@ import com.nnamdi.noteapp.utils.NotesUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -29,7 +27,6 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 
 @Slf4j
-@RunWith(MockitoJUnitRunner.class)
 @SpringBootTest
 class NoteServiceTest {
     @Mock
@@ -93,14 +90,22 @@ class NoteServiceTest {
     @Test
     void testToUpdateNote() {
         Notes note = buildNote();
-        when(repository.findById(updatedNote().getId())).thenReturn(Optional.of(note));
-        when(notesService.findNoteById(updatedNote().getId())).thenReturn(note);
+        when(repository.findById(anyString())).thenReturn(Optional.of(note));
         when(notesUtil.updateNoteEntity(note, updateRequestDto())).thenReturn(updatedNote());
         when(repository.save(any(Notes.class))).thenReturn(updatedNote());
         final  var response = notesService.updateNote(updatedNote().getId(), updateRequestDto());
         assertThat(response).isNotNull();
         assertThat(response.getTitle()).isNotBlank();
         assertThat(response.getId()).isNotBlank();
+    }
+
+    @Test
+    void testToDeleteNote() {
+
+        when(repository.findById(anyString())).thenReturn(Optional.ofNullable(buildNote()));
+         final var response = notesService.deleteNote(buildNote().getId());
+         assertThat(response).isNotNull();
+
     }
 
 
