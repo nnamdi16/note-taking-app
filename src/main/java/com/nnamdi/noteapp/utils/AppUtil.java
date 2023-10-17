@@ -1,5 +1,6 @@
 package com.nnamdi.noteapp.utils;
 
+import com.nnamdi.noteapp.domain.response.AppResponse;
 import com.nnamdi.noteapp.exceptions.BadRequestException;
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,5 +27,15 @@ public enum AppUtil {
         if(page < 1 || size <  1) {
             throw new BadRequestException("page and size must be positive and not less than 1");
         }
+    }
+    public static AppResponse buildAppResponse(String message, boolean success, Object data, Object error,
+                                               int statusCode) {
+        return AppResponse.builder()
+                .data(data)
+                .error(error)
+                .message(message)
+                .success(success)
+                .status(statusCode)
+                .build();
     }
 }
