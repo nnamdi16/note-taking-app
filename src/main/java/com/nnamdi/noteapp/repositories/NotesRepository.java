@@ -13,6 +13,6 @@ import java.util.Optional;
 public interface NotesRepository extends JpaRepository<Notes,String> {
     Optional<Notes> findByTitle(String title);
 
-    @Query("select n from Notes n where n.createdBy = %?1% order by n.createdDate desc")
+    @Query("select n from Notes n where n.createdBy IlIKE %:author% order by n.createdDate desc")
     Page<Notes> findByAuthor(String author, Pageable pageable);
 }
