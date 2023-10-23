@@ -40,7 +40,7 @@ public class ExceptionHandlers {
     }
 
     @ExceptionHandler(ModelNotFoundException.class)
-    @ResponseStatus(HttpStatus.CONFLICT)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     @ResponseBody
     public AppResponse handleNotFoundExistException (final ModelNotFoundException ex) {
         return AppResponse.builder()
